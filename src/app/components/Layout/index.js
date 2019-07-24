@@ -1,17 +1,15 @@
 import React from 'react';
+import Header from './Header';
+import Footer from './Footer';
 import './index.scss';
 
 function Layout({ children }) {
   return (
-    <React.Fragment>
-      <header>
-        <h1>Hello from eShop</h1>
-      </header>
-      <main>{children}</main>
-      <footer>
-        <span>Footer</span>
-      </footer>
-    </React.Fragment>
+    <div className="Layout">
+      <Header />
+      <main className="Main">{children}</main>
+      <Footer />
+    </div>
   );
 }
 

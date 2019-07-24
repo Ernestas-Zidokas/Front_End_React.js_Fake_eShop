@@ -1,11 +1,14 @@
 import React from 'react';
-import { Products } from './pages';
+import { Products, Cart, Favorites, PageNotFound } from './pages';
 import { Layout } from './components';
+import { BrowserRouter as Router, Route, Switch, Redirect } from 'react-router-dom';
 import './index.scss';
 
 class App extends React.Component {
   state = {
     products: [],
+    favorites: [],
+    cart: [],
     isLoading: false,
     error: null,
   };
@@ -21,12 +24,83 @@ class App extends React.Component {
     }
   }
 
+  toggleFavorite = id => {
+    const { favorites } = this.state;
+
+    if (favorites.includes(id)) {
+      this.setState({ favorites: favorites.filter(favoriteId => favoriteId !== id) });
+    } else {
+      this.setState({ favorites: [...favorites, id] });
+    }
+  };
+
+  addToCart = addId => {
+    this.setState(state => {
+      const itemIndex = state.cart.findIndex(({ id }) => id === addId);
+
+      if (itemIndex > -1) {
+        return {
+          cart: state.cart.map((cartItem, i) =>
+            i === itemIndex ? { ...cartItem, count: cartItem.count + 1 } : cartItem,
+          ),
+        };
+      }
+
+      return { cart: [...state.cart, { id: addId, count: 1 }] };
+    });
+  };
+
+  removeFromCart = removeId => {
+    this.setState(state => {
+      return {
+        cart: state.cart.filter(({ id }) => id !== removeId),
+      };
+    });
+  };
+
   render() {
-    const { products, isLoading, error } = this.state;
+    const { products, isLoading, error, favorites, cart } = this.state;
+
     return (
-      <Layout>
-        <Products products={products} isLoading={isLoading} error={error} />
-      </Layout>
+      <Router>
+        <Layout>
+          <Switch>
+            <Route
+              path="/"
+              exact
+              render={() => (
+                <Products
+                  toggleFavorite={this.toggleFavorite}
+                  addToCart={this.addToCart}
+                  favorites={favorites}
+                  products={products}
+                  cart={cart}
+                  isLoading={isLoading}
+                  error={error}
+                  removeFromCart={this.removeFromCart}
+                />
+              )}
+            />
+            <Route path="/cart" exact render={() => <Cart cart={cart} products={products} />} />
+            <Route
+              path="/favorites"
+              exact
+              render={() => (
+                <Favorites
+                  toggleFavorite={this.toggleFavorite}
+                  cart={cart}
+                  addToCart={this.addToCart}
+                  favorites={favorites}
+                  products={products}
+                  removeFromCart={this.removeFromCart}
+                />
+              )}
+            />
+            <Redirect exact from="/home" to="/" />
+            <Route component={PageNotFound} />
+          </Switch>
+        </Layout>
+      </Router>
     );
   }
 }
