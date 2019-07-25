@@ -1,7 +1,8 @@
 import React from 'react';
-import { Products, Cart, Favorites, PageNotFound } from './pages';
+import { Products, Cart, Favorites, PageNotFound, SingleProduct } from './pages';
 import { Layout } from './components';
 import { BrowserRouter as Router, Route, Switch, Redirect } from 'react-router-dom';
+import { ROUTES } from '../constants';
 import './index.scss';
 
 class App extends React.Component {
@@ -9,7 +10,7 @@ class App extends React.Component {
     products: [],
     favorites: [],
     cart: [],
-    isLoading: false,
+    isLoading: true,
     error: null,
   };
 
@@ -50,11 +51,30 @@ class App extends React.Component {
     });
   };
 
+  // removeFromCart = removeId => {
+  //   this.setState(state => {
+  //     return {
+  //       cart: state.cart.filter(({ id }) => id !== removeId),
+  //     };
+  //   });
+  // };
+
   removeFromCart = removeId => {
     this.setState(state => {
-      return {
-        cart: state.cart.filter(({ id }) => id !== removeId),
-      };
+      const itemIndex = state.cart.findIndex(({ id }) => id === removeId);
+      const { count } = state.cart[itemIndex];
+
+      if (itemIndex > -1) {
+        if (count > 1) {
+          return {
+            cart: state.cart.map((cartItem, i) =>
+              i === itemIndex ? { ...cartItem, count: cartItem.count - 1 } : cartItem,
+            ),
+          };
+        } else {
+          return { cart: state.cart.filter(({ id }) => id !== removeId) };
+        }
+      }
     });
   };
 
@@ -66,7 +86,7 @@ class App extends React.Component {
         <Layout>
           <Switch>
             <Route
-              path="/"
+              path={ROUTES.defaultPage}
               exact
               render={() => (
                 <Products
@@ -81,9 +101,13 @@ class App extends React.Component {
                 />
               )}
             />
-            <Route path="/cart" exact render={() => <Cart cart={cart} products={products} />} />
             <Route
-              path="/favorites"
+              path={ROUTES.cart}
+              exact
+              render={() => <Cart cart={cart} products={products} />}
+            />
+            <Route
+              path={ROUTES.favorites}
               exact
               render={() => (
                 <Favorites
@@ -96,7 +120,16 @@ class App extends React.Component {
                 />
               )}
             />
-            <Redirect exact from="/home" to="/" />
+            <Route
+              path={ROUTES.product}
+              exact
+              render={props => {
+                const { id } = props.match.params;
+                const product = products.find(product => product.id === id);
+                return <SingleProduct {...props} product={product} isLoading={isLoading} />;
+              }}
+            />
+            <Redirect exact from={ROUTES.home} to={ROUTES.defaultPage} />
             <Route component={PageNotFound} />
           </Switch>
         </Layout>
