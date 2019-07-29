@@ -2,16 +2,7 @@ import React from 'react';
 import { Loader, ProductCard } from '../../components';
 import './index.scss';
 
-function Products({
-  isLoading,
-  error,
-  products = [],
-  toggleFavorite,
-  favorites,
-  addToCart,
-  cart,
-  removeFromCart,
-}) {
+function Products({ isLoading, error, products = [], favorites, cart, ...restProps }) {
   return (
     <div className="Products">
       {isLoading && <Loader />}
@@ -21,13 +12,11 @@ function Products({
 
         return (
           <ProductCard
-            toggleFavorite={toggleFavorite}
-            addToCart={addToCart}
-            key={data.id}
+            {...restProps}
             {...data}
+            key={data.id}
             isFavorite={favorites.includes(data.id)}
             cartCount={count}
-            removeFromCart={removeFromCart}
           />
         );
       })}
