@@ -2,7 +2,7 @@ import React from 'react';
 import { ProductCard } from '../../components';
 import './index.scss';
 
-function Error(params) {
+function Error() {
   return <p>Sorry, you don't have any favorited items!</p>;
 }
 

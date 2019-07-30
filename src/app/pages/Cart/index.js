@@ -1,40 +1,6 @@
 import React from 'react';
+import { Error, CartHeader, Total, CartRow } from './components';
 import './index.scss';
-
-function Error() {
-  return <p>Sorry, you don't have any items in your Cart!</p>;
-}
-
-function CartHeader() {
-  return (
-    <div className="Cart--header">
-      <label>Product:</label>
-      <label>Price:</label>
-    </div>
-  );
-}
-
-function Total({ total }) {
-  return (
-    <div className="Cart--total">
-      <label>Total:</label> {total}
-    </div>
-  );
-}
-
-function CartRow({ name, price, count, currencySymbol }) {
-  return (
-    <div className="Cart--item">
-      <span>
-        {name} x {count}
-      </span>
-      <span>
-        {price * count}
-        {currencySymbol}
-      </span>
-    </div>
-  );
-}
 
 function Cart({ cart, products }) {
   const cartItems = cart.map(item => {
