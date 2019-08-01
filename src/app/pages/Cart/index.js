@@ -21,6 +21,7 @@ function mapStateToProps(state) {
 
   const cartItems = cart.map(item => {
     const product = products.find(({ id }) => id === item.id);
+
     return { ...product, ...item };
   });
 

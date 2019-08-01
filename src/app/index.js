@@ -27,20 +27,6 @@ function App() {
     dataKey: 'products',
   });
 
-  // const removeFromCart = removeId => {
-  //   const itemIndex = cart.findIndex(({ id }) => id === removeId);
-
-  //   if (itemIndex > -1) {
-  //     setCart(
-  //       cart
-  //         .map((cartItem, i) =>
-  //           i === itemIndex ? { ...cartItem, count: cartItem.count - 1 } : cartItem,
-  //         )
-  //         .filter(item => item.count > 0),
-  //     );
-  //   }
-  // };
-
   return (
     <Provider store={store}>
       <Router>

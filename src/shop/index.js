@@ -20,7 +20,19 @@ function reducer(state = INITIAL_STATE, { type, payload }) {
       return { ...state, cart: [...state.cart, payload] };
 
     case 'REMOVE_FROM_CART':
-      return { ...state, cart: state.cart.filter(({ id }) => id !== payload) };
+      const productIndex = state.cart.findIndex(({ id }) => id === payload);
+
+      if (productIndex > -1) {
+        return {
+          ...state,
+          cart: state.cart
+            .map((cartItem, i) =>
+              i === productIndex ? { ...cartItem, count: cartItem.count - 1 } : cartItem,
+            )
+            .filter(item => item.count > 0),
+        };
+      }
+      break;
 
     case 'TOGGLE_FAVORITE':
       if (state.favorites.includes(payload)) {
