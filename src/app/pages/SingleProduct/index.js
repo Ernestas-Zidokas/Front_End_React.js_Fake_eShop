@@ -2,6 +2,8 @@ import React from 'react';
 import { Redirect } from 'react-router-dom';
 import { ROUTES } from '../../../constants';
 import { Loader } from '../../components';
+import { connect } from 'react-redux';
+import shop from '../../../shop';
 import './index.scss';
 
 function SingleProduct({ product, history, isLoading }) {
@@ -12,6 +14,7 @@ function SingleProduct({ product, history, isLoading }) {
   if (isLoading) {
     return <Loader />;
   }
+
   const { name, image, description, price, currencySymbol } = product;
   const onClick = () => history.push(ROUTES.cart);
 
@@ -30,4 +33,15 @@ function SingleProduct({ product, history, isLoading }) {
   );
 }
 
-export default SingleProduct;
+function mapStateToProps(
+  state,
+  {
+    match: {
+      params: { id },
+    },
+  },
+) {
+  return { product: shop.selectors.getProductById(state, id) };
+}
+
+export default connect(mapStateToProps)(SingleProduct);

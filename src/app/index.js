@@ -6,6 +6,7 @@ import { Layout } from './components';
 import { ROUTES } from '../constants';
 import { useFetch } from './hooks';
 import store from './state';
+import shop from '../shop';
 import './index.scss';
 
 function onError() {
@@ -13,13 +14,13 @@ function onError() {
 }
 
 function onSuccess(payload) {
-  store.dispatch({ type: 'SET_PRODUCTS', payload: payload });
+  store.dispatch({ type: shop.actionTypes.SET_PRODUCTS, payload: payload });
 
   return payload;
 }
 
 function App() {
-  const { loading: isLoading, products, error } = useFetch({
+  const { loading: isLoading, error } = useFetch({
     onError,
     onSuccess,
     src: 'https://boiling-reaches-93648.herokuapp.com/food-shop/products',
@@ -42,11 +43,7 @@ function App() {
             <Route
               path={ROUTES.product}
               exact
-              render={props => {
-                const { id } = props.match.params;
-                const product = products.find(product => product.id === id);
-                return <SingleProduct {...props} product={product} isLoading={isLoading} />;
-              }}
+              render={props => <SingleProduct {...props} isLoading={isLoading} />}
             />
             <Redirect exact from={ROUTES.home} to={ROUTES.defaultPage} />
             <Route component={PageNotFound} />
