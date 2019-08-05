@@ -1,8 +1,19 @@
 import React from 'react';
+import { compose, bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import { Link } from 'react-router-dom';
+import { Link, withRouter } from 'react-router-dom';
 import shop from '../../../shop';
+import { ROUTES } from '../../../constants';
 import './index.scss';
+
+// HOC (Higher order component) example
+function withHoc(Component) {
+  function WrappedComponent(props) {
+    return <Component {...props} text="Amazing" />;
+  }
+
+  return WrappedComponent;
+}
 
 function ProductCard({
   id,
@@ -16,8 +27,12 @@ function ProductCard({
   addToCart,
   toggleFavorite,
   removeFromCart,
+  history,
+  text,
 }) {
   const className = isFavorite ? 'ProductCard ProductCard__favorite' : 'ProductCard';
+  const completePurchase = () => history.push(ROUTES.cart);
+
   return (
     <div className={className}>
       <div className="ProductCard--image">
@@ -34,23 +49,26 @@ function ProductCard({
           <span>Price:</span> <span>{`${price}${currencySymbol}`}</span>
         </p>
         <div>
-          <button type="button" onClick={toggleFavorite}>
+          <button type="button" onClick={() => toggleFavorite(id)}>
             <span role="img" aria-label="favourite icon">
               {isFavorite ? '❌' : '💜'}
             </span>
           </button>
           {!!cartCount && (
-            <button type="button" onClick={removeFromCart}>
+            <button type="button" onClick={() => removeFromCart(id)}>
               <span role="img" aria-label="Wastebasket icon">
                 🗑️
               </span>
             </button>
           )}
-          <button type="button" onClick={() => addToCart(cartCount)}>
+          <button type="button" onClick={() => addToCart({ id, count: cartCount + 1 })}>
             <span role="img" aria-label="cart icon">
               🛒
             </span>
             {!!cartCount && <div className="ProductCard--cta-count">{cartCount}</div>}
+          </button>
+          <button type="button" onClick={() => completePurchase()}>
+            {text}
           </button>
         </div>
       </div>
@@ -67,27 +85,21 @@ function mapStateToProps(state, { id }) {
   };
 }
 
-function mapDispatchToProps(dispatch, { id }) {
-  return {
-    addToCart: count =>
-      dispatch({
-        type: shop.actionTypes.ADD_TO_CART,
-        payload: { id, count: count + 1 },
-      }),
-    removeFromCart: () =>
-      dispatch({
-        type: shop.actionTypes.REMOVE_FROM_CART,
-        payload: id,
-      }),
-    toggleFavorite: () =>
-      dispatch({
-        type: shop.actionTypes.TOGGLE_FAVORITE,
-        payload: id,
-      }),
-  };
-}
+const enhance = compose(
+  withHoc,
+  withRouter,
+  connect(
+    mapStateToProps,
+    dispatch =>
+      bindActionCreators(
+        {
+          addToCart: shop.actions.addToCart,
+          removeFromCart: shop.actions.removeFromCart,
+          toggleFavorite: shop.actions.toggleFavorite,
+        },
+        dispatch,
+      ),
+  ),
+);
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps,
-)(ProductCard);
+export default enhance(ProductCard);

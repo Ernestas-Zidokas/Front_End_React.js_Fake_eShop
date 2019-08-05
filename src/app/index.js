@@ -14,7 +14,7 @@ function onError() {
 }
 
 function onSuccess(payload) {
-  store.dispatch({ type: shop.actionTypes.SET_PRODUCTS, payload: payload });
+  store.dispatch(shop.actions.setProducts(payload));
 
   return payload;
 }
