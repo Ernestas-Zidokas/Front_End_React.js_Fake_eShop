@@ -1,4 +1,5 @@
 import * as types from './actionTypes';
+import { API } from '../constants';
 
 export const removeFromCart = id => ({
   type: types.REMOVE_FROM_CART,
@@ -24,7 +25,7 @@ export const getProducts = () => async dispatch => {
   dispatch({ type: types.GET_PRODUCTS });
 
   try {
-    const result = await fetch('https://boiling-reaches-93648.herokuapp.com/food-shop/products');
+    const result = await fetch(API.getProducts);
     const json = await result.json();
     dispatch({
       type: types.GET_PRODUCTS_SUCCESS,
@@ -36,6 +37,4 @@ export const getProducts = () => async dispatch => {
       payload: 'Something went wrong!',
     });
   }
-
-  dispatch({ type: types.GET_PRODUCTS });
 };
