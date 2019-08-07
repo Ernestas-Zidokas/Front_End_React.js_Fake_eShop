@@ -17,11 +17,19 @@ function Cart({ cart, total }) {
   );
 }
 
-function mapStateToProps(state) {
+// function mapStateToProps(state) {
+//   const cart = shop.selectors.getCartProducts(state);
+//   const total = cart.reduce((result, { price, count }) => result + Number(price) * count, 0);
+
+//   return { cart, total };
+// }
+
+const enhance = connect(state => {
   const cart = shop.selectors.getCartProducts(state);
-  const total = cart.reduce((result, { price, count }) => result + Number(price) * count, 0);
+  return {
+    total: cart.reduce((result, { price, count }) => result + Number(price) * count, 0),
+    cart: cart,
+  };
+});
 
-  return { cart, total };
-}
-
-export default connect(mapStateToProps)(Cart);
+export default enhance(Cart);
