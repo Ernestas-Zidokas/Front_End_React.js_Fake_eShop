@@ -1,15 +1,18 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { Redirect } from 'react-router-dom';
 import { ROUTES } from '../../../constants';
-import { Loader } from '../../components';
+import { Loader, ShopContext } from '../../components';
 import './index.scss';
 
-function SingleProduct({ product, history, isLoading }) {
-  if (!product && !isLoading) {
+function SingleProduct({ history, match: { params } }) {
+  const { products, loading } = useContext(ShopContext);
+  const product = products.find(product => product.id === params.id);
+
+  if (!product && !loading) {
     return <Redirect to={ROUTES.defaultPage} />;
   }
 
-  if (isLoading) {
+  if (loading) {
     return <Loader />;
   }
   const { name, image, description, price, currencySymbol } = product;

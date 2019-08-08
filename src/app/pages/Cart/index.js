@@ -1,8 +1,11 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { Error, CartHeader, Total, CartRow } from './components';
+import { ShopContext } from '../../components';
 import './index.scss';
 
-function Cart({ cart, products }) {
+function Cart() {
+  const { products, cart } = useContext(ShopContext);
+
   const cartItems = cart.map(item => {
     const product = products.find(({ id }) => id === item.id);
     return { ...product, ...item };
