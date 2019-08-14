@@ -1,11 +1,37 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
 import { ROUTES } from '../../../constants';
-import './index.scss';
+import styled from 'styled-components';
+
+const StyledHeader = styled.header`
+  padding: 0px 15px;
+  background: #2e802e;
+
+  .Header--navigation {
+    max-width: 1020px;
+    margin: 0 auto;
+
+    &-item {
+      display: inline-block;
+      color: #fff;
+      font-size: 20px;
+      line-height: 20px;
+      padding: 10px 15px;
+      transition: all 0.3s;
+
+      &:hover,
+      &.active {
+        opacity: 0.6;
+        background: #fff;
+        color: #2e802e;
+      }
+    }
+  }
+`;
 
 function Header() {
   return (
-    <header className="Header">
+    <StyledHeader>
       <nav className="Header--navigation">
         <NavLink exact className="Header--navigation-item" to={ROUTES.defaultPage}>
           Home
@@ -17,7 +43,7 @@ function Header() {
           Favorites
         </NavLink>
       </nav>
-    </header>
+    </StyledHeader>
   );
 }
 
