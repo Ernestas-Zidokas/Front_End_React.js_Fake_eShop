@@ -5,7 +5,9 @@ Practice project at the CodeAcademy FrontEnd studies. The imitation of the eShop
 ## Getting Started
 
 Master branch - State management via React Context.
+
 State-management-via-redux branch.
+
 Webpack-config.
 
 Clone or download ZIP of this repository to get the code of the game.
